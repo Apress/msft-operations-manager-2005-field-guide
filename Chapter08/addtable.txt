@@ -1,0 +1,18 @@
+'==========================================================================
+'
+' SQL Statement
+'
+' NAME: Creating table in the SQL_Report_Params user created database
+'
+' COMMENT: This is an example script only. It should not be used in production unless tested
+'==========================================================================
+
+Use SQL_Report_Params
+CREATE TABLE [dbo].[CPU_Report] (
+[Param1] [int] NOT NULL PRIMARY KEY ,
+[Param2] [int] ,
+[Param3] [nvarchar] (50) NOT NULL ,
+[Param4] [bit],
+[Param5] [nvarchar] (20) NOT NULL ,
+) ON [PRIMARY]
+GO

@@ -1,0 +1,19 @@
+'==========================================================================
+'
+' SQL Statement
+'
+' NAME: Data retention period
+'
+' COMMENT: This is an example script only. It should not be used in production unless tested
+'==========================================================================
+select cs.cs_tablename 'Table Name', wcs.wcs_groomdays 'Groom Days' 
+from warehouseclassschema wcs
+join classschemas cs
+on cs.cs_classID = wcs.wcs_classID
+where cs.cs_tablename = 'SC_AlertFact_Table'or
+cs.CS_TableName = 'SC_AlertHistoryFact_Table' OR
+cs.CS_TableName = 'SC_AlertToEventFact_Table' OR
+cs.CS_TableName = 'SC_EventFact_Table' OR
+cs.CS_TableName = 'SC_EventParameterFact_Table' OR
+cs.CS_TableName = 'SC_SampledNumericDataFact_Table' 
+AND wcs.WCS_MustBeGroomed = 1

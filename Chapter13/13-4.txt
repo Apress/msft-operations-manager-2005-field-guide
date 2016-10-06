@@ -1,0 +1,46 @@
+'==========================================================================
+'
+' VBScript Source File 
+'
+' NAME: Stop Start Service'
+'
+' COMMENT: This is an example script only. It should not be used in production,
+'==========================================================================
+
+Const Event_Type_Success = 0
+Const Event_Type_Error = 1
+Const Event_Type_Warning = 2
+Const Event_Type_Information = 4
+Const Eventid_Service_Restart = 41001
+
+strComputer = "." 
+
+Set objPerfData = ScriptContext.PerfData
+strSvc = objPerfData.InstanceName
+strLine = strSvc &" Serivce Restarted"
+
+Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2") 
+Set colItems = objWMIService.ExecQuery("Select * from Win32_Service where name='strSvc'") 
+
+For Each objItem in colItems 
+   objItem.StopService  
+   objItem.StartService 
+Next 
+
+CreateEvent Eventid_Serivce_Restart, Event_Type_Error, strLine
+
+Sub CreateEvent(lngEventID, lngEventType, strMessage)
+  On Error Resume Next
+
+  Dim objNewEvent
+
+  ' Create a new event
+  Set objNewEvent = ScriptContext.CreateEvent
+  ' Set event properties
+  objNewEvent.Message = strMessage
+  objNewEvent.EventNumber = lngEventID
+  objNewEvent.EventType = lngEventType
+  ' Submit the event
+  ScriptContext.Submit objNewEvent
+  Set objNewEvent = Nothing
+End Sub

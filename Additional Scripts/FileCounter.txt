@@ -1,0 +1,50 @@
+'==========================================================================
+'
+' VBScript Source File 
+'
+' NAME: Counts number of files in a folder and generates MOM event when number too high
+'
+' COMMENT: This is an example script only. It should not be used in production,
+'==========================================================================
+
+Option Explicit
+
+Dim strFolderName
+Dim objFileSysObject
+Dim objFolder
+Dim objNoOfFiles
+Dim objMOMEvent
+
+strFolderName = "<path>"
+
+Set objFileSysObject = CreateObject("Scripting.FileSystemObject")
+
+CountFilesInFldr(strFolderName)
+
+Sub CountFilesInFldr(sPath)
+  Set objFolder = objFileSysObject.GetFolder(sPath)
+  objNoOfFiles = objFolder.Files.Count
+End Sub
+
+If (objNoOfFiles > 50) Then
+  ' -- Create error event to be submitted to MOM server (No of Files Exceeded)
+ 	Set objMOMEvent = ScriptContext.CreateEvent()
+ 
+ 	objMOMEvent.EventSource = "File Monitor"
+ 	objMOMEvent.EventNumber = 10002
+ 	objMOMEvent.EventType = 1
+ 	objMOMEvent.Message = "Number of messages held in Folder has exceeded threshold. No of Files = " & objNoOfFiles
+ 
+  ' -- Submit Created Error Event to MOM data stream
+ 	ScriptContext.Submit(objMOMEvent)
+ 
+Else
+  ' -- Do Nothing
+End If
+
+' -- Reset all variables
+Set strFolderName = Nothing
+Set objFileSysObject = Nothing
+Set objFolder = Nothing
+Set objNoOfFiles = Nothing
+Set objMOMEvent = Nothing

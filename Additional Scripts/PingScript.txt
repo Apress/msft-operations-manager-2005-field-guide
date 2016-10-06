@@ -1,0 +1,89 @@
+'==========================================================================
+'
+' VBScript Source File 
+'
+' NAME: Pings multiple devices to verify they are online
+'
+' COMMENT: This is an example script only. It should not be used in production,
+'==========================================================================
+
+Option Explicit 
+
+' -- Define variables
+  Dim wshShell
+  Dim objFileSystem
+  Dim strPingDest
+  Dim strLogFileName
+  Dim objLogFile
+  Dim strLogData
+  Dim fOpenLog
+  Dim objParams
+  Dim objMOMEvent
+
+' -- Create a Shell object
+  Set wshShell = CreateObject("WScript.Shell")
+   
+' -- Create a FileSystemObject
+  Set objFileSystem = CreateObject("Scripting.FileSystemObject")
+
+' -- Create the Parameter holder
+  Set objParams = ScriptContext.Parameters
+
+' -- Get the script values from parameters
+  strPingDest = objParams.Get("IPAddress")
+  strLogFileName = objParams.Get("IPAddress")
+
+' -- Define log file location
+  objLogFile = "C:\" & strLogFileName & "_PingLog.txt"
+  
+' -- Run the ping and pipe output to the log file
+  wshShell.Run "cmd.exe /c ping " & strPingDest & " > " & objLogFile,,true
+       
+' -- Open log file and read line 6
+  Set fOpenLog = objFileSystem.OpenTextFile(objLogFile, 1)
+  fOpenLog.ReadLine
+  fOpenLog.ReadLine
+  fOpenLog.ReadLine
+  fOpenLog.ReadLine
+  fOpenLog.ReadLine
+  strLogData = fOpenLog.ReadLine
+ 
+' -- Generate alert if the 6th line is Request timed out.   
+  Select Case strLogData 
+    Case "Request timed out." & vbCR
+    
+     ' -- Create error event to be submitted to MOM server (Ping Test failed)
+       Set objMOMEvent = ScriptContext.CreateEvent()
+        objMOMEvent.EventSource = "MOM Ping Monitor Tool"
+     	objMOMEvent.EventNumber = 10002
+     	objMOMEvent.EventType = 1
+     	objMOMEvent.Message = "Ping Test to " & strPingDest & " failed. Please investigate."
+     
+     '-- Submit Created Error Event to MOM data stream
+       ScriptContext.Submit(objMOMEvent)
+   
+     Case Else
+    
+     '-- Create information event and submit to MOM data stream for tracking purposes
+       Set objMOMEvent = ScriptContext.CreateEvent()
+        objMOMEvent.EventSource = "MOM Ping Monitor Tool"
+        objMOMEvent.EventNumber = 10001
+        objMOMEvent.EventType = 4
+     	objMOMEvent.Message = "Ping Test to " & strPingDest & " succeeded. No action necessary."
+     	
+     '-- Submit Created Error Event to MOM data stream
+       ScriptContext.Submit(objMOMEvent)
+  
+    End Select
+
+' -- Reset all variables
+  Set wshShell = Nothing
+  Set objFileSystem = Nothing
+  Set strPingDest = Nothing
+  Set strLogFileName = Nothing
+  Set objLogFile = Nothing
+  Set strLogData = Nothing
+  Set fOpenLog = Nothing
+  Set objParams = Nothing
+  Set objMOMEvent = Nothing
+

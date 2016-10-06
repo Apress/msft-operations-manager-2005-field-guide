@@ -1,0 +1,11 @@
+'==========================================================================
+'
+' SQL Statement
+'
+' NAME: Checks data to be groomed
+'
+' COMMENT: This is an example script only. It should not be used in production unless tested
+'==========================================================================
+
+SELECT COUNT(*) AS AlertsAwaitingGrooming FROM dbo.Alert
+WHERE (ResolutionState=255)

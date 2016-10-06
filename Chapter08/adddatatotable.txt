@@ -1,0 +1,16 @@
+'==========================================================================
+'
+' SQL Statement
+'
+' NAME: Adding data to a table
+'
+' COMMENT: This is an example script only. It should not be used in production unless tested
+'==========================================================================
+
+INSERT INTO [dbo].[UserInfo] (SubscriptionID, EmployeeID, LastName, FileType, Format)
+VALUES ('1', '289', 'Valdez', '1', 'IMAGE')
+INSERT INTO [dbo].[UserInfo] (SubscriptionID, EmployeeID, LastName, FileType, Format)
+VALUES ('2', '284', 'Alberts', '1', 'MHTML')
+INSERT INTO [dbo].[UserInfo] (SubscriptionID, EmployeeID, LastName, FileType, Format)
+VALUES ('3', '275', 'Blythe', '1', 'PDF')
+GO

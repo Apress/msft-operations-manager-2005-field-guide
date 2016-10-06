@@ -1,0 +1,18 @@
+'==========================================================================
+'
+' SQL Statement
+'
+' NAME: Change data retention period
+'
+' COMMENT: This is an example script only. It should not be used in production unless tested
+'==========================================================================
+Declare @DataRetention int
+Select @DataRetention = 180
+
+exec p_updateGroomDays 'SC_SampledNumericDataFact_Table', @DataRetention
+exec p_updateGroomDays 'SC_AlertFact_Table', @DataRetention
+exec p_updateGroomDays 'SC_EventParameterFact_Table', @DataRetention
+exec p_updateGroomDays 'SC_AlertToEventFact_Table', @DataRetention
+exec p_updateGroomDays 'SC_EventFact_Table', @DataRetention
+exec p_updateGroomDays 'SC_AlertHistoryFact_Table', @DataRetention
+

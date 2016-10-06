@@ -1,0 +1,47 @@
+'==========================================================================
+'
+' VBScript Source File 
+'
+' NAME: Check DNS
+'
+'
+' COMMENT: This is an example script only. It should not be used in production,
+'==========================================================================
+
+Const Event_Type_Success = 0
+Const Event_Type_Error = 1
+Const Event_Type_Warning = 2
+Const Event_Type_Information = 4
+Const Eventid_Dnslookup_Failed = 41001
+Const Eventid_Dnslookup_Success = 41002
+
+Set Objshell = Createobject("Wscript.Shell")
+Set Objwshscriptexec = Objshell.Exec("Nslookup Acme.Com")
+Set Objstdout = Objwshscriptexec.Stdout
+
+While Not Objstdout.Atendofstream
+   'Loouparray(Intsize) = Objstdout.Readall
+Strline = Objstdout.Readall
+Wend
+
+Srv="<IP Address>"
+
+If Instr(Strline,Srv)= 0 Then
+     	Createevent Eventid_Dnslookup_Failed, Event_Type_Information, Strline
+Else
+	Createevent Eventid_Dnslookup_Success, Event_Type_Information, Strline
+End If
+
+Sub Createevent(Lngeventid, Lngeventtype, Strmessage)
+  On Error Resume Next
+  Dim Objnewevent
+  ' Create A New Event
+  Set Objnewevent = Scriptcontext.Createevent
+  ' Set Event Properties
+  Objnewevent.Message = Strmessage
+  Objnewevent.Eventnumber = Lngeventid
+  Objnewevent.Eventtype = Lngeventtype
+  ' Submit The Event
+  Scriptcontext.Submit Objnewevent
+  Set Objnewevent = Nothing
+End Sub

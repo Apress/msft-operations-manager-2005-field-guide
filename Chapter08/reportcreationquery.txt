@@ -1,0 +1,13 @@
+'==========================================================================
+'
+' SQL Statement
+'
+' NAME: Selects data for generation of custom report
+'
+' COMMENT: This is an example script only. It should not be used in production unless tested
+'==========================================================================
+
+SELECT ComputerName, Message, NTEventID, Source, TimeGenerated, RepeatCount FROM SDKEventView
+WHERE (TimeGenerated > @BeginDate)
+  AND (TimeGenerated < @EndDate)
+  AND NTEventID = @EventID
